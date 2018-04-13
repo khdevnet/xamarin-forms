@@ -1,4 +1,6 @@
-﻿using Xamarin.App.Views;
+﻿using AutoMapper;
+using Xamarin.App.Data.Models;
+using Xamarin.App.ViewModels.Models;
 using Xamarin.Forms;
 
 namespace Xamarin.App
@@ -8,7 +10,7 @@ namespace Xamarin.App
         public App()
         {
             InitializeComponent();
-
+            ConfigureMapper();
             MainPage = new NavigationPage(new Xamarin.App.Views.MainPage());
         }
 
@@ -26,5 +28,13 @@ namespace Xamarin.App
         {
             // Handle when your app resumes
         }
+        private static void ConfigureMapper()
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<ToDoItem, ToDoItemModel>();
+            });
+        }
+
     }
 }

@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using AutoMapper;
 using Xamarin.App.Data;
-using Xamarin.App.Models;
+using Xamarin.App.Data.Models;
+using Xamarin.App.ViewModels.Models;
 using Xamarin.App.Views;
 using Xamarin.Forms;
 
@@ -18,8 +19,8 @@ namespace Xamarin.App.ViewModels
         public ToDoItemsViewModel(INavigation navigation)
         {
             this.navigation = navigation;
-            ItemSelectedCommand = new Command<ToDoItem>(HandleItemSelectedAsync);
-            RemoveItemCommand = new Command<ToDoItem>(HandleRemoveItem);
+            ItemSelectedCommand = new Command<ToDoItemModel>(HandleItemSelectedAsync);
+            RemoveItemCommand = new Command<ToDoItemModel>(HandleRemoveItem);
             AddItemCommand = new Command(HandleAddItemAsync);
         }
 
@@ -29,7 +30,8 @@ namespace Xamarin.App.ViewModels
 
         public ICommand AddItemCommand { get; }
 
-        public ObservableCollection<ToDoItem> Items { get; set; } = new ObservableCollection<ToDoItem>(DataContext.ToDoItems);
+        public ObservableCollection<ToDoItemModel> Items { get; set; } =
+            new ObservableCollection<ToDoItemModel>(Mapper.Map<IEnumerable<ToDoItemModel>>(DataContext.ToDoItems));
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -42,9 +44,9 @@ namespace Xamarin.App.ViewModels
             }
         }
 
-        private async void HandleItemSelectedAsync(ToDoItem item)
+        private async void HandleItemSelectedAsync(ToDoItemModel item)
         {
-            await navigation.PushAsync(new ToDoItemPage(item));
+            await navigation.PushAsync(new ToDoItemPage(Mapper.Map<ToDoItem>(item)));
         }
 
         private async void HandleAddItemAsync()
@@ -52,7 +54,7 @@ namespace Xamarin.App.ViewModels
             await navigation.PushAsync(new ToDoItemPage(new ToDoItem()));
         }
 
-        private void HandleRemoveItem(ToDoItem item)
+        private void HandleRemoveItem(ToDoItemModel item)
         {
             Items.Remove(item);
         }

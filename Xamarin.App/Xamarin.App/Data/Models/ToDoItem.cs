@@ -1,4 +1,4 @@
-﻿namespace Xamarin.App.Models
+﻿namespace Xamarin.App.Data.Models
 {
     public class ToDoItem
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-using Xamarin.App.Models;
+using Xamarin.App.Data.Models;
 
 namespace Xamarin.App.Data
 {

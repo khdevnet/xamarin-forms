@@ -20,43 +20,54 @@
             <Label Text="Your To Do List not finished."
                    VerticalOptions="Center" 
                    HorizontalOptions="Center" />
-            <ListView 
+            <ScrollView>
+                <ListView 
                 ItemsSource="{Binding Items}"
                 HasUnevenRows="True">
-                <ListView.Behaviors>
-                    <behaviors:EventToCommandBehavior
+                    <ListView.Behaviors>
+                        <behaviors:EventToCommandBehavior
                         EventName="ItemSelected"
                         Command="{Binding ItemSelectedCommand}"
                         Converter="{StaticResource SelectedItemConverter}"/>
-                </ListView.Behaviors>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <ContentView>
-                                <StackLayout 
-                                    Padding="5"
-                                    Orientation="Horizontal"  
-                                    HorizontalOptions="FillAndExpand">
-                                    <StackLayout
-                                        Orientation="Vertical"  
+                    </ListView.Behaviors>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <ContentView>
+                                    <StackLayout 
+                                        Padding="5"
+                                        Orientation="Vertical"
                                         HorizontalOptions="FillAndExpand">
-                                        <Label Text="{Binding Name}"/>
+                                        <StackLayout 
+                                            Orientation="Horizontal"
+                                            HorizontalOptions="FillAndExpand">
+                                            <StackLayout  
+                                                Orientation="Vertical"
+                                                HorizontalOptions="StartAndExpand">
+                                                <Label Text="{Binding Name}"/>
+                                            </StackLayout>
+                                            <StackLayout 
+                                                Orientation="Vertical"
+                                                HorizontalOptions="EndAndExpand">
+                                                <Button Image="remove.png"
+                                                        WidthRequest="20"
+                                                        HeightRequest="20"
+                                                        Command="{Binding Source={x:Reference MainPage}, Path=BindingContext.RemoveItemCommand}"    
+                                                        CommandParameter="{Binding .}"/>
+                                            </StackLayout>
+                                        </StackLayout>
+                                        <StackLayout Orientation="Horizontal"
+                                                 HorizontalOptions="FillAndExpand"
+                                                 IsVisible="IsDescriptionVisible">
+                                            <Label Text="{Binding Description}"/>
+                                        </StackLayout>
                                     </StackLayout>
-                                    <StackLayout
-                                        Orientation="Vertical"  
-                                        HorizontalOptions="EndAndExpand">
-                                        <Button Image="remove.png"
-                                                WidthRequest="20"
-                                                HeightRequest="20"
-                                                Command="{Binding Source={x:Reference MainPage}, Path=BindingContext.RemoveItemCommand}"
-                                                CommandParameter="{Binding .}"/>
-                                    </StackLayout>
-                                </StackLayout>
-                            </ContentView>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                                </ContentView>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ScrollView>
             <Button Text="Add" Command="{Binding AddItemCommand}"/>
             <Button Text="Go to About" Clicked="Button_Clicked" />
         </StackLayout>

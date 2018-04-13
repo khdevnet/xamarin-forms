@@ -1,4 +1,4 @@
-﻿using Xamarin.App.Models;
+﻿using Xamarin.App.Data.Models;
 
 namespace Xamarin.App.ViewModels
 {

@@ -1,10 +1,11 @@
 ﻿using System;
 using Xamarin.App.Data;
+using Xamarin.App.Data.Models;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-using Xamarin.App.Models;
 using Xamarin.App.ViewModels;
+
 namespace Xamarin.App.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
