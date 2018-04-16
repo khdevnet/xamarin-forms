@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Xamarin.App.Data.Models;
 using Xamarin.App.ViewModels.Models;
+using Xamarin.App.Views;
 using Xamarin.Forms;
 
 namespace Xamarin.App
@@ -11,7 +12,7 @@ namespace Xamarin.App
         {
             InitializeComponent();
             ConfigureMapper();
-            MainPage = new NavigationPage(new Xamarin.App.Views.MainPage());
+            MainPage = new NavigationPage(new SignInPage());
         }
 
         protected override void OnStart()
