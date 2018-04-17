@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Xamarin.App.Views.SignInPage"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"  
+             xmlns:appControls="clr-namespace:Xamarin.App.Controls;assembly=Xamarin.App"
+             x:Class="Xamarin.App.Views.SignInPage"      
              BackgroundImage="login_background.png">
     <ContentPage.Content>
 
@@ -12,44 +13,69 @@
                     Opacity="0.4"
                     RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}"
                     RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}"/>
-                <Grid
+                <StackLayout
                     RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}"
                     RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Label Text="Welcome to Xamarin.Forms!"
-                           TextColor="White"
-                           VerticalOptions="CenterAndExpand" 
-                           HorizontalOptions="CenterAndExpand" />
-                    <Label Text="Welcome to Xamarin.Forms!"
-                           TextColor="White"
-                           VerticalOptions="CenterAndExpand" 
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height=".7*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackLayout Orientation="Horizontal"
+                                 HorizontalOptions="CenterAndExpand"
+                                 VerticalOptions="End">
+                            <Label Text="Welcome, " 
+                                   TextColor="White"
+                                   VerticalOptions="End"/>
+                            <Label Text="Jenifer" 
+                                   TextColor="DeepSkyBlue"
+                                   VerticalOptions="End"/>
+                        </StackLayout>
+
+                        <Image Source="user_avatar.png" 
+                           VerticalOptions="StartAndExpand" 
                            HorizontalOptions="CenterAndExpand"
-                           Grid.Row="1"    />
-                    <Label Text="Welcome to Xamarin.Forms!"
-                           TextColor="White"
-                           VerticalOptions="CenterAndExpand" 
-                           HorizontalOptions="CenterAndExpand"
-                           Grid.Row="2"/>
-                    <Label Text="Welcome to Xamarin.Forms!"
-                           TextColor="White"
-                           VerticalOptions="CenterAndExpand" 
-                           HorizontalOptions="CenterAndExpand"
-                           Grid.Row="3"/>
-                    <Label Text="Welcome to Xamarin.Forms!"
-                           TextColor="White"
-                           VerticalOptions="CenterAndExpand" 
-                           HorizontalOptions="CenterAndExpand"
-                           Grid.Row="4"/>
-                </Grid>
+                           Grid.Row="1" />
+
+                        <StackLayout Grid.Row="2" 
+                                     VerticalOptions="Center">
+                            <Entry 
+                                Placeholder="Email"
+                                PlaceholderColor="White"
+                                TextColor="White"
+                                HeightRequest="40" />
+                            <Entry 
+                                Placeholder="Password"
+                                PlaceholderColor="White"
+                                TextColor="White"
+                                HeightRequest="40"
+                                IsPassword="True"/>
+                            <Entry 
+                                   Placeholder="Password11"></Entry>
+                        </StackLayout>
+
+                        <StackLayout Grid.Row="3" 
+                                     Orientation="Vertical"
+                                     HorizontalOptions="FillAndExpand">
+                            <Button Text="Login"
+                                    TextColor="White"
+                                    BackgroundColor="DeepSkyBlue"
+                                    Clicked="LoginButtonClicked"/>
+
+                            <Label Text="CREATE NEW ACCOUNT"
+                                   TextColor="White"
+                                   FontSize="7"
+                                   VerticalOptions="StartAndExpand"
+                                   HorizontalOptions="CenterAndExpand"/>
+                        </StackLayout>
+                    </Grid>
+                </StackLayout>
             </RelativeLayout>
         </StackLayout>
     </ContentPage.Content>

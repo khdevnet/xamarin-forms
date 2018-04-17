@@ -34,31 +34,31 @@
                         <DataTemplate>
                             <ViewCell>
                                 <ContentView>
-                                    <StackLayout 
+                                    <StackLayout
                                         Padding="5"
                                         Orientation="Vertical"
                                         HorizontalOptions="FillAndExpand">
-                                        <StackLayout 
+                                        <StackLayout
                                             Orientation="Horizontal"
                                             HorizontalOptions="FillAndExpand">
-                                            <StackLayout  
+                                            <StackLayout
                                                 Orientation="Vertical"
                                                 HorizontalOptions="StartAndExpand">
                                                 <Label Text="{Binding Name}"/>
                                             </StackLayout>
-                                            <StackLayout 
+                                            <StackLayout
                                                 Orientation="Vertical"
                                                 HorizontalOptions="EndAndExpand">
                                                 <Button Image="remove.png"
                                                         WidthRequest="20"
                                                         HeightRequest="20"
-                                                        Command="{Binding Source={x:Reference MainPage}, Path=BindingContext.RemoveItemCommand}"    
+                                                        Command="{Binding Source={x:Reference MainPage}, Path=BindingContext.RemoveItemCommand}"
                                                         CommandParameter="{Binding .}"/>
                                             </StackLayout>
                                         </StackLayout>
                                         <StackLayout Orientation="Horizontal"
                                                  HorizontalOptions="FillAndExpand"
-                                                 IsVisible="IsDescriptionVisible">
+                                                 IsVisible="False">
                                             <Label Text="{Binding Description}"/>
                                         </StackLayout>
                                     </StackLayout>
