@@ -4,12 +4,13 @@ using Xamarin.App.ViewModels;
 
 namespace Xamarin.App.Views
 {
-    public partial class MainPage : ContentPage
+    public partial class ProfilePage : ContentPage
     {
-        public MainPage()
+        public ProfilePage()
         {
             InitializeComponent();
-            BindingContext = new ToDoItemsViewModel(Navigation);
+            NavigationPage.SetHasNavigationBar(this, false);
+            BindingContext = new ProfileViewModel(Navigation);
         }
 
         private async void Button_Clicked(object sender, EventArgs e)

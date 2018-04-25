@@ -20,7 +20,6 @@ namespace Xamarin.App.Views
             this.item = item;
             InitializeComponent();
             BindingContext = new ToDoItemViewModel(item);
-
         }
 
         private async void SaveButton_Clicked(object sender, EventArgs e)
@@ -29,7 +28,7 @@ namespace Xamarin.App.Views
             {
                 DataContext.ToDoItems.Add(item);
             }
-            await Navigation.PushAsync(new MainPage());
+            await Navigation.PushAsync(new ProfilePage());
         }
     }
 }

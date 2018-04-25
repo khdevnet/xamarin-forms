@@ -12,7 +12,7 @@ namespace Xamarin.App
         {
             InitializeComponent();
             ConfigureMapper();
-            MainPage = new NavigationPage(new SignInPage());
+            MainPage = new NavigationPage(new ProfilePage());
         }
 
         protected override void OnStart()

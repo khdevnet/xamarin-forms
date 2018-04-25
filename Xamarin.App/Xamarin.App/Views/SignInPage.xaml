@@ -1,11 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"  
-             xmlns:appControls="clr-namespace:Xamarin.App.Controls;assembly=Xamarin.App"
              x:Class="Xamarin.App.Views.SignInPage"      
              BackgroundImage="login_background.png">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="SmallTextEntry" TargetType="Entry">
+                <Setter Property="FontSize" Value="Small" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="PlaceholderColor" Value="White" />
+                <Setter Property="HeightRequest" Value="40" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
-
         <StackLayout>
             <RelativeLayout>
                 <BoxView 
@@ -47,17 +55,11 @@
                                      VerticalOptions="Center">
                             <Entry 
                                 Placeholder="Email"
-                                PlaceholderColor="White"
-                                TextColor="White"
-                                HeightRequest="40" />
+                                Style="{StaticResource SmallTextEntry}"/>
                             <Entry 
                                 Placeholder="Password"
-                                PlaceholderColor="White"
-                                TextColor="White"
-                                HeightRequest="40"
+                                Style="{StaticResource SmallTextEntry}"
                                 IsPassword="True"/>
-                            <Entry 
-                                   Placeholder="Password11"></Entry>
                         </StackLayout>
 
                         <StackLayout Grid.Row="3" 

@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"                 
+             xmlns:behaviors="clr-namespace:Xamarin.App.Behaviors;assembly=Xamarin.App"
+             xmlns:converters="clr-namespace:Xamarin.App.Converters;assembly=Xamarin.App" 
+             xmlns:appControls="clr-namespace:Xamarin.App.Controls;assembly=Xamarin.App"
+             x:Class="Xamarin.App.Views.ProfilePage"
+             x:Name="ProfilePage"
+             BackgroundImage="profile_background.png">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="StatisticsBoxStackLayout" TargetType="StackLayout">
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
+                <Setter Property="VerticalOptions" Value="CenterAndExpand" />
+            </Style>
+            <Style x:Key="StatisticsCountLabel" TargetType="Label">
+                <Setter Property="FontSize" Value="Medium" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
+                <Setter Property="VerticalOptions" Value="Fill" />
+            </Style>
+            <Style x:Key="StatisticsTitleLabel" TargetType="Label">
+                <Setter Property="FontSize" Value="Micro" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
+                <Setter Property="VerticalOptions" Value="Fill" />
+            </Style>
+            <converters:SelectedItemEventArgsToSelectedItemConverter
+                x:Key="SelectedItemConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <ScrollView>
+            <RelativeLayout x:Name="ProfileDetails">
+                <Grid RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=.5}"
+                      RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"
+                      ColumnSpacing="0" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50*" />
+                        <RowDefinition Height="50*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50*" />
+                        <ColumnDefinition Width="50*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.ColumnSpan="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40*" />
+                            <ColumnDefinition Width="60*" />
+                        </Grid.ColumnDefinitions>
+                        <StackLayout Orientation="Vertical"
+                                     VerticalOptions="CenterAndExpand">
+                            <Image Source="user_avatar.png" 
+                                   WidthRequest="75"
+                                   VerticalOptions="CenterAndExpand" 
+                                   HorizontalOptions="CenterAndExpand"/>
+                        </StackLayout>
+                        <StackLayout Grid.Column="1" 
+                                     Orientation="Vertical"
+                                     VerticalOptions="CenterAndExpand"
+                                     HorizontalOptions="StartAndExpand">
+                            <Label Text="Jennifer Wilson"
+                                   FontSize="Medium"
+                                   TextColor="White"/>
+                            <Label Text="UI/UX Designer"
+                                   FontSize="Micro"
+                                   TextColor="DeepSkyBlue"/>
+                        </StackLayout>
+                    </Grid>
+                    <StackLayout Grid.Row="1" Grid.Column="0" 
+                                 BackgroundColor="DeepSkyBlue">
+                        <StackLayout Style="{StaticResource StatisticsBoxStackLayout}" >
+                            <Label Text="12"
+                                   Style="{StaticResource StatisticsCountLabel}" />
+                            <Label Text="remaining tasks"
+                                   Style="{StaticResource StatisticsTitleLabel}" />
+                        </StackLayout>
+                    </StackLayout>
+                    <StackLayout Grid.Row="1" Grid.Column="1" 
+                                 BackgroundColor="DeepPink" >
+                        <StackLayout Style="{StaticResource StatisticsBoxStackLayout}" >
+                            <Label Text="32"
+                                   Style="{StaticResource StatisticsCountLabel}" />
+                            <Label Text="completed tasks"
+                                   Style="{StaticResource StatisticsTitleLabel}" />
+                        </StackLayout>
+                    </StackLayout>
+                </Grid>
+                <appControls:RoundCornersButton Text="+"
+                        TextColor="Black"
+                        FontSize="Large"
+                        BorderRadius="25"
+                        BackgroundColor="White" 
+                        HeightRequest="50" 
+                        WidthRequest="50" 
+                        RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width, Factor=.5, Constant = -25}" 
+                        RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Factor=0, Property=Y, Constant=115}"
+                        Command="{Binding AddItemCommand}"/>
+
+                <RelativeLayout BackgroundColor="White" 
+                                RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Y, Factor=0, Constant=250}" 
+                                RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" >
+                    <StackLayout Padding="5">
+                        <Label Text="TODAY"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Start" />
+                        <ListView ItemsSource="{Binding Items}"
+                                      HasUnevenRows="True">
+                            <ListView.Behaviors>
+                                <behaviors:EventToCommandBehavior 
+                                        EventName="ItemSelected" 
+                                        Command="{Binding ItemSelectedCommand}"
+                                        Converter="{StaticResource SelectedItemConverter}"/>
+                            </ListView.Behaviors>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <ContentView>
+                                            <StackLayout Padding="5"
+                                                         Orientation="Vertical"
+                                                         HorizontalOptions="FillAndExpand">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="*" />
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="10*" />
+                                                        <ColumnDefinition Width="80*" />
+                                                        <ColumnDefinition Width="10*" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <StackLayout>
+                                                        <appControls:RoundCornersButton VerticalOptions="CenterAndExpand"
+                                                                                        HorizontalOptions="StartAndExpand"
+                                                                                        BackgroundColor="BlueViolet" 
+                                                                                        BorderRadius="5"
+                                                                                        HeightRequest="10" 
+                                                                                        WidthRequest="10" />
+                                                    </StackLayout>
+                                                    <StackLayout Grid.Column="1">
+                                                        <Label VerticalOptions="CenterAndExpand"
+                                                               HorizontalOptions="StartAndExpand"
+                                                               Text="{Binding Name}" />
+                                                    </StackLayout>
+                                                    <StackLayout  Grid.Column="2">
+                                                        <appControls:RoundCornersButton VerticalOptions="CenterAndExpand"
+                                                                                        HorizontalOptions="StartAndExpand"
+                                                                                        Image="arrow_down12x12.png"
+                                                                                        BackgroundColor="Transparent"
+                                                                                        Command="{Binding Source={x:Reference ProfilePage}, Path=BindingContext.ShowOrHideItemDescriptionCommand}"
+                                                                                        CommandParameter="{Binding .}"/>
+                                                    </StackLayout>
+                                                </Grid>
+                                                <StackLayout Orientation="Horizontal"
+                                                             HorizontalOptions="FillAndExpand"
+                                                             IsVisible="{Binding IsDescriptionVisible}" >
+                                                    <Label Text="{Binding Description}" />
+                                                </StackLayout>
+                                            </StackLayout>
+                                        </ContentView>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackLayout>
+                </RelativeLayout>
+            </RelativeLayout>
+        </ScrollView>
+    </ContentPage.Content>
+    <!--<ContentPage.Content>
+        <StackLayout
+            Padding="5">
+            <Label Text="Welcome Master."
+                   VerticalOptions="Center" 
+                   HorizontalOptions="Center" />
+            <Label Text="Your To Do List not finished."
+                   VerticalOptions="Center" 
+                   HorizontalOptions="Center" />
+            <ScrollView>
+                <ListView 
+                ItemsSource="{Binding Items}"
+                HasUnevenRows="True">
+                    <ListView.Behaviors>
+                        <behaviors:EventToCommandBehavior
+                        EventName="ItemSelected"
+                        Command="{Binding ItemSelectedCommand}"
+                        Converter="{StaticResource SelectedItemConverter}"/>
+                    </ListView.Behaviors>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <ContentView>
+                                    <StackLayout
+                                        Padding="5"
+                                        Orientation="Vertical"
+                                        HorizontalOptions="FillAndExpand">
+                                        <StackLayout
+                                            Orientation="Horizontal"
+                                            HorizontalOptions="FillAndExpand">
+                                            <StackLayout
+                                                Orientation="Vertical"
+                                                HorizontalOptions="StartAndExpand">
+                                                <Label Text="{Binding Name}"/>
+                                            </StackLayout>
+                                            <StackLayout
+                                                Orientation="Vertical"
+                                                HorizontalOptions="EndAndExpand">
+                                                <Button Image="remove.png"
+                                                        WidthRequest="20"
+                                                        HeightRequest="20"
+                                                        Command="{Binding Source={x:Reference MainPage}, Path=BindingContext.RemoveItemCommand}"
+                                                        CommandParameter="{Binding .}"/>
+                                            </StackLayout>
+                                        </StackLayout>
+                                        <StackLayout Orientation="Horizontal"
+                                                 HorizontalOptions="FillAndExpand"
+                                                 IsVisible="False">
+                                            <Label Text="{Binding Description}"/>
+                                        </StackLayout>
+                                    </StackLayout>
+                                </ContentView>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ScrollView>
+            <Button Text="Add" Command="{Binding AddItemCommand}"/>
+            <Button Text="Go to About" Clicked="Button_Clicked" />
+        </StackLayout>
+    </ContentPage.Content>-->
+</ContentPage>
