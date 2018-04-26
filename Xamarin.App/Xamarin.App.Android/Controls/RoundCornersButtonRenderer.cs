@@ -12,11 +12,5 @@ namespace Xamarin.App.Droid.Controls
         public RoundCornersButtonRendererDroid(Context context) : base(context)
         {
         }
-
-        protected override void OnElementChanged(ElementChangedEventArgs<Button> e)
-        {
-            base.OnElementChanged(e);
-            Control?.SetHintTextColor(global::Android.Graphics.Color.Rgb(255, 255, 255));
-        }
     }
 }

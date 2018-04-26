@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:Xamarin.App.ViewModels;assembly=Xamarin.App"
+             x:Class="Xamarin.App.Views.ToDoItemView"
+             viewModels:ViewModelLocator.AutoWireViewModel="true"
+             Title="Add/Edit Todo Item">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="TextInputStyle" TargetType="Entry"
+                   BasedOn="{StaticResource SmallTextEntry}">
+                <Setter Property="TextColor" Value="Black" />
+                <Setter Property="PlaceholderColor" Value="Black" />
+            </Style>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="Add/Edit ToDoItem"
+                   HorizontalOptions="CenterAndExpand" />
+            <Entry Placeholder="Enter Name"
+                   Text="{Binding Item.Name}"
+                   Style="{StaticResource TextInputStyle}"/>
+
+            <Editor Text="{Binding Item.Description}"
+                    VerticalOptions="FillAndExpand"
+                    Style="{StaticResource TextInputStyle}"/>
+
+            <Button Text="Save"
+                    HorizontalOptions="CenterAndExpand"
+                    Command="{Binding SaveItemCommand}"/>
+            <Button Text="Finish"
+                    HorizontalOptions="CenterAndExpand"
+                    Command="{Binding FinishItemCommand}"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

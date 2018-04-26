@@ -1,29 +1,52 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
-using AutoMapper;
-
-using Xamarin.App.Data;
-using Xamarin.App.Data.Models;
-using Xamarin.App.ViewModels.Models;
-using Xamarin.App.Views;
 using Xamarin.Forms;
+
+using Xamarin.App.Extensibility.Data;
+using Xamarin.App.Extensibility.Services;
+using Xamarin.App.ViewModels.Models;
 
 namespace Xamarin.App.ViewModels
 {
-    public class ProfileViewModel : INotifyPropertyChanged
+    public class ProfileViewModel : ViewModelBase
     {
-        private readonly INavigation navigation;
+        private readonly INavigationService navigationService;
+        private readonly IDataContext dataContext;
 
-        public ProfileViewModel(INavigation navigation)
+        public ProfileViewModel(INavigationService navigationService, IDataContext dataContext)
         {
-            this.navigation = navigation;
+            this.navigationService = navigationService;
+            this.dataContext = dataContext;
+
             ItemSelectedCommand = new Command<ToDoItemModel>(HandleItemSelectedAsync);
             RemoveItemCommand = new Command<ToDoItemModel>(HandleRemoveItem);
             ShowOrHideItemDescriptionCommand = new Command<ToDoItemModel>(ShowOrHideItemDescription);
             AddItemCommand = new Command(HandleAddItemAsync);
+        }
+
+        private int completedTasksCount;
+        public int CompletedTasksCount
+        {
+            get => completedTasksCount;
+            set
+            {
+                completedTasksCount = value;
+                RaisePropertyChanged(() => CompletedTasksCount);
+            }
+        }
+
+        private int remainingTasksCount;
+        public int RemainingTasksCount
+        {
+            get => remainingTasksCount;
+            set
+            {
+                remainingTasksCount = value;
+                RaisePropertyChanged(() => RemainingTasksCount);
+            }
         }
 
         public ICommand ItemSelectedCommand { get; }
@@ -34,29 +57,35 @@ namespace Xamarin.App.ViewModels
 
         public ICommand AddItemCommand { get; }
 
-        public ObservableCollection<ToDoItemModel> Items { get; set; } =
-            new ObservableCollection<ToDoItemModel>(Mapper.Map<IEnumerable<ToDoItemModel>>(DataContext.ToDoItems));
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void RaisePropertyChanged([CallerMemberName]string propertyName = "")
+        private ObservableCollection<ToDoItemModel> items;
+        public ObservableCollection<ToDoItemModel> Items
         {
-            PropertyChangedEventHandler changed = PropertyChanged;
-            if (changed != null)
+            get => items;
+            set
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                items = value;
+                RaisePropertyChanged(() => Items);
             }
+        }
+
+        public override async Task InitializeAsync(object navigationData)
+        {
+
+            IsBusy = true;
+            Items = GetList();
+            RemainingTasksCount = Items?.Count(item => !item.IsDone) ?? 0;
+            CompletedTasksCount = Items?.Count(item => item.IsDone) ?? 0;
+            IsBusy = false;
         }
 
         private async void HandleItemSelectedAsync(ToDoItemModel item)
         {
-            await navigation.PushAsync(new ToDoItemPage(Mapper.Map<ToDoItem>(item)));
-            item = null;
+            await navigationService.NavigateToAsync<ToDoItemViewModel>(item.Id);
         }
 
         private async void HandleAddItemAsync()
         {
-            await navigation.PushAsync(new ToDoItemPage(new ToDoItem()));
+            await navigationService.NavigateToAsync<ToDoItemViewModel>();
         }
 
         private void HandleRemoveItem(ToDoItemModel item)
@@ -75,6 +104,20 @@ namespace Xamarin.App.ViewModels
             int position = Items.IndexOf(item);
             Items.Remove(item);
             Items.Insert(position, item);
+        }
+
+        private ObservableCollection<ToDoItemModel> GetList()
+        {
+            IEnumerable<ToDoItemModel> todoItems = dataContext.GetItems().Select(item => new ToDoItemModel
+            {
+                BulletColor = item.IsDone ? Color.DeepPink : Color.DeepSkyBlue,
+                Name = item.Name,
+                Id = item.Id,
+                IsDone = item.IsDone,
+                Description = item.Description,
+                IsDescriptionVisible = false
+            });
+            return new ObservableCollection<ToDoItemModel>(todoItems);
         }
     }
 }

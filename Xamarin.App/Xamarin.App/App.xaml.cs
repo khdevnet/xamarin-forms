@@ -1,5 +1,7 @@
-﻿using AutoMapper;
+﻿using System.Threading.Tasks;
+using AutoMapper;
 using Xamarin.App.Data.Models;
+using Xamarin.App.Extensibility.Services;
 using Xamarin.App.ViewModels.Models;
 using Xamarin.App.Views;
 using Xamarin.Forms;
@@ -11,13 +13,21 @@ namespace Xamarin.App
         public App()
         {
             InitializeComponent();
+            AppServiceLocator.Initialize();
             ConfigureMapper();
-            MainPage = new NavigationPage(new ProfilePage());
         }
 
-        protected override void OnStart()
+        protected override async void OnStart()
         {
-            // Handle when your app starts
+
+            base.OnStart();
+
+            if (Device.RuntimePlatform != Device.UWP)
+            {
+                await InitNavigation();
+            }
+
+            base.OnResume();
         }
 
         protected override void OnSleep()
@@ -29,6 +39,13 @@ namespace Xamarin.App
         {
             // Handle when your app resumes
         }
+
+        private Task InitNavigation()
+        {
+            INavigationService navigationService = AppServiceLocator.Resolve<INavigationService>();
+            return navigationService.InitializeAsync();
+        }
+
         private static void ConfigureMapper()
         {
             Mapper.Initialize(cfg =>
@@ -36,6 +53,5 @@ namespace Xamarin.App
                 cfg.CreateMap<ToDoItem, ToDoItemModel>();
             });
         }
-
     }
 }
