@@ -3,35 +3,38 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:Xamarin.App.Converters;assembly=Xamarin.App" 
              xmlns:appControls="clr-namespace:Xamarin.App.Controls;assembly=Xamarin.App"
+             xmlns:enum="clr-namespace:Xamarin.App.Extensibility.Enum;assembly=Xamarin.App"
              xmlns:viewModels="clr-namespace:Xamarin.App.ViewModels;assembly=Xamarin.App"
              x:Class="Xamarin.App.Views.ProfileView"
              BackgroundImage="profile_background.png"
-             x:Name="ProfileView"
+             x:Name="profileView"
              viewModels:ViewModelLocator.AutoWireViewModel="true">
 
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style x:Key="StatisticsBoxStackLayout" TargetType="StackLayout">
                 <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
-                <Setter Property="VerticalOptions" Value="CenterAndExpand" />
+                <Setter Property="VerticalOptions" Value="Center" />
             </Style>
-            <Style x:Key="StatisticsCountLabel" TargetType="Label">
+            <Style x:Key="StatisticsCountLabel" TargetType="Entry">
                 <Setter Property="FontSize" Value="Medium" />
                 <Setter Property="TextColor" Value="White" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
                 <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
                 <Setter Property="VerticalOptions" Value="Fill" />
             </Style>
             <Style x:Key="StatisticsTitleLabel" TargetType="Label">
                 <Setter Property="FontSize" Value="Micro" />
                 <Setter Property="TextColor" Value="White" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
                 <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
-                <Setter Property="VerticalOptions" Value="Fill" />
+                <Setter Property="VerticalOptions" Value="CenterAndExpand" />
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
         <ScrollView>
-            <RelativeLayout x:Name="ProfileDetails">
+            <RelativeLayout>
                 <Grid RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=.5}"
                       RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"
                       ColumnSpacing="0" >
@@ -73,19 +76,27 @@
                     <StackLayout Grid.Row="1" Grid.Column="0" 
                                  BackgroundColor="DeepSkyBlue">
                         <StackLayout Style="{StaticResource StatisticsBoxStackLayout}" >
-                            <Label Text="{Binding RemainingTasksCount}"
-                                   Style="{StaticResource StatisticsCountLabel}" />
-                            <Label Text="remaining tasks"
-                                   Style="{StaticResource StatisticsTitleLabel}" />
+                            <appControls:EmptyStyleButton 
+                                Text="{Binding RemainingTasksCount}"
+                                Style="{StaticResource StatisticsCountLabel}"
+                                Command="{Binding OpenToDoItemsCommand}"
+                                CommandParameter="{x:Static enum:ToDoItemStatus.Remaining}"/>
+                            <Label 
+                                Text="remaining tasks"
+                                Style="{StaticResource StatisticsTitleLabel}"/>
                         </StackLayout>
                     </StackLayout>
                     <StackLayout Grid.Row="1" Grid.Column="1" 
                                  BackgroundColor="DeepPink" >
                         <StackLayout Style="{StaticResource StatisticsBoxStackLayout}" >
-                            <Label Text="{Binding CompletedTasksCount}"
-                                   Style="{StaticResource StatisticsCountLabel}" />
-                            <Label Text="completed tasks"
-                                   Style="{StaticResource StatisticsTitleLabel}" />
+                            <appControls:EmptyStyleButton 
+                                Text="{Binding CompletedTasksCount}"
+                                Style="{StaticResource StatisticsCountLabel}"
+                                Command="{Binding OpenToDoItemsCommand}"
+                                CommandParameter="{x:Static enum:ToDoItemStatus.Completed}"/>
+                            <Label 
+                                Text="completed tasks"
+                                Style="{StaticResource StatisticsTitleLabel}"/>
                         </StackLayout>
                     </StackLayout>
                 </Grid>
@@ -98,7 +109,7 @@
                         WidthRequest="50" 
                         RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width, Factor=.5, Constant = -25}" 
                         RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Factor=0, Property=Y, Constant=140}"
-                        Command="{Binding Source={x:Reference ProfileView}, Path=BindingContext.AddItemCommand}"/>
+                        Command="{Binding Source={x:Reference profileView}, Path=BindingContext.AddItemCommand}"/>
 
                 <RelativeLayout BackgroundColor="White" 
                                 RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Y, Factor=0, Constant=250}" 
@@ -140,7 +151,7 @@
                                                                                       BackgroundColor="Transparent"
                                                                                       FontSize="Micro"
                                                                                       Text="{Binding Name}"
-                                                                                      Command="{Binding Source={x:Reference ProfileView}, Path=BindingContext.ItemSelectedCommand}"
+                                                                                      Command="{Binding Source={x:Reference profileView}, Path=BindingContext.ItemSelectedCommand}"
                                                                                       CommandParameter="{Binding .}">
                                                         </appControls:EmptyStyleButton>
                                                     </StackLayout>
@@ -149,7 +160,7 @@
                                                                                       HorizontalOptions="StartAndExpand"
                                                                                       Image="arrow_down12x12.png"
                                                                                       BackgroundColor="Transparent"
-                                                                                      Command="{Binding Source={x:Reference ProfileView}, Path=BindingContext.ShowOrHideItemDescriptionCommand}"
+                                                                                      Command="{Binding Source={x:Reference profileView}, Path=BindingContext.ShowOrHideItemDescriptionCommand}"
                                                                                       CommandParameter="{Binding .}"/>
                                                     </StackLayout>
                                                 </Grid>

@@ -2,9 +2,9 @@
 
 namespace Xamarin.App.Views
 {
-    public partial class ProfileView : ContentPage
+    public partial class ToDoItemsView : ContentPage
     {
-        public ProfileView()
+        public ToDoItemsView()
         {
             InitializeComponent();
         }

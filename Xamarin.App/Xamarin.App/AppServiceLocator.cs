@@ -1,6 +1,7 @@
 ﻿using System;
 using CommonServiceLocator;
 using Unity;
+using Unity.Lifetime;
 using Unity.ServiceLocation;
 using Xamarin.App.Data;
 using Xamarin.App.Extensibility.Common;
@@ -18,7 +19,8 @@ namespace Xamarin.App
             string dbPath = DependencyService.Get<IFileHelper>().GetLocalFilePath("TodoSQLite.db3");
             UnityContainer unityContainer = new UnityContainer();
             unityContainer.RegisterInstance<IDataContext>(new DataContext(dbPath));
-            unityContainer.RegisterType<INavigationService, NavigationService>();
+            unityContainer.RegisterType<INavigationService, NavigationService>(new ContainerControlledLifetimeManager());
+            unityContainer.RegisterType<IToDoItemService, ToDoItemService>();
 
             ServiceLocator.SetLocatorProvider(() => new UnityServiceLocator(unityContainer));
         }

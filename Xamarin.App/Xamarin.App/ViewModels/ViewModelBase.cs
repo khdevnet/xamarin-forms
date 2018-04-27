@@ -7,15 +7,15 @@ namespace Xamarin.App.ViewModels
     {
         protected readonly INavigationService NavigationService;
 
-        private bool _isBusy;
+        private bool isBusy;
 
         public bool IsBusy
         {
-            get => _isBusy;
+            get => isBusy;
 
             set
             {
-                _isBusy = value;
+                isBusy = value;
                 RaisePropertyChanged(() => IsBusy);
             }
         }

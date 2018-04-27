@@ -25,8 +25,7 @@ namespace Xamarin.App.ViewModels
         }
         private static void OnAutoWireViewModelChanged(BindableObject bindable, object oldValue, object newValue)
         {
-            Element view = bindable as Element;
-            if (view == null)
+            if (!(bindable is Element view))
             {
                 return;
             }

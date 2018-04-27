@@ -17,8 +17,6 @@
     </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Add/Edit ToDoItem"
-                   HorizontalOptions="CenterAndExpand" />
             <Entry Placeholder="Enter Name"
                    Text="{Binding Item.Name}"
                    Style="{StaticResource TextInputStyle}"/>

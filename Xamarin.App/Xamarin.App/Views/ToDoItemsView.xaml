@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:Xamarin.App.Converters;assembly=Xamarin.App" 
+             xmlns:appControls="clr-namespace:Xamarin.App.Controls;assembly=Xamarin.App"
+             xmlns:viewModels="clr-namespace:Xamarin.App.ViewModels;assembly=Xamarin.App"
+             x:Class="Xamarin.App.Views.ToDoItemsView"    
+             x:Name="toDoItemsView"
+             BackgroundImage="profile_background.png"
+             viewModels:ViewModelLocator.AutoWireViewModel="true"
+             Title="{Binding Title}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Padding="5">
+                <ListView ItemsSource="{Binding Items}"
+                                      HasUnevenRows="True">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <ContentView>
+                                    <StackLayout Padding="5"
+                                                         Orientation="Vertical"
+                                                         HorizontalOptions="FillAndExpand">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="10*" />
+                                                <ColumnDefinition Width="80*" />
+                                                <ColumnDefinition Width="10*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackLayout>
+                                                <appControls:RoundCornersButton VerticalOptions="CenterAndExpand"
+                                                                                        HorizontalOptions="StartAndExpand"
+                                                                                        BackgroundColor="{Binding BulletColor}" 
+                                                                                        BorderRadius="5"
+                                                                                        HeightRequest="10" 
+                                                                                        WidthRequest="10" />
+                                            </StackLayout>
+                                            <StackLayout Grid.Column="1">
+                                                <appControls:EmptyStyleButton VerticalOptions="CenterAndExpand"
+                                                                                      HorizontalOptions="StartAndExpand"
+                                                                                      BackgroundColor="Transparent"
+                                                                                      FontSize="Micro"
+                                                                                      Text="{Binding Name}"  
+                                                                                      TextColor="White"
+                                                                                      Command="{Binding Source={x:Reference toDoItemsView}, Path=BindingContext.ItemSelectedCommand}"
+                                                                                      CommandParameter="{Binding .}">
+                                                </appControls:EmptyStyleButton>
+                                            </StackLayout>
+                                            <StackLayout  Grid.Column="2">
+                                                <appControls:EmptyStyleButton VerticalOptions="CenterAndExpand"
+                                                                                      HorizontalOptions="StartAndExpand"
+                                                                                      Image="arrow_down12x12.png"
+                                                                                      BackgroundColor="Transparent"
+                                                                                      Command="{Binding Source={x:Reference toDoItemsView}, Path=BindingContext.ShowOrHideItemDescriptionCommand}"
+                                                                                      CommandParameter="{Binding .}"/>
+                                            </StackLayout>
+                                        </Grid>
+                                        <StackLayout Orientation="Horizontal"
+                                                             HorizontalOptions="FillAndExpand"
+                                                             IsVisible="{Binding IsDescriptionVisible}" >
+                                            <Label Text="{Binding Description}" />
+                                        </StackLayout>
+                                    </StackLayout>
+                                </ContentView>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

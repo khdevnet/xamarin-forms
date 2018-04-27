@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:Xamarin.App.ViewModels;assembly=Xamarin.App"
+             xmlns:controls="clr-namespace:Xamarin.App.Controls;assembly=Xamarin.App"
+             x:Class="Xamarin.App.Views.MenuView"  
+             x:Name="MenuViewName"
+             Title="Master"
+             viewModels:ViewModelLocator.AutoWireViewModel="true">
+    <ContentPage.Content>
+        <StackLayout>
+            <ListView x:Name="MenuItemsListView"
+              SeparatorVisibility="None"
+              HasUnevenRows="true"
+              ItemsSource="{Binding MenuItems}">
+            <ListView.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="80"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                    </Grid.RowDefinitions>
+                    <Label
+              Grid.Column="1"
+              Grid.Row="2"
+              Text="AppName"
+              Style="{DynamicResource SubtitleStyle}"/>
+                </Grid>
+            </ListView.Header>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Padding="15,10" HorizontalOptions="FillAndExpand">
+                            <controls:EmptyStyleButton 
+                    VerticalOptions="FillAndExpand"   
+                    BackgroundColor="Transparent"
+                    Text="{Binding Title}" 
+                    FontSize="Micro"
+                    Command="{Binding Source={x:Reference MenuViewName}, Path=BindingContext.NavigateToPageCommand}"
+                    CommandParameter="{Binding .}"/>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

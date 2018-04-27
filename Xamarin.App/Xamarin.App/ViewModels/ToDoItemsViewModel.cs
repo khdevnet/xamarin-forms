@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Xamarin.App.Data.Models;
 using Xamarin.App.Extensibility.Enum;
 using Xamarin.Forms;
 
@@ -12,52 +11,40 @@ using Xamarin.App.ViewModels.Models;
 
 namespace Xamarin.App.ViewModels
 {
-    public class ProfileViewModel : ViewModelBase
+    public class ToDoItemsViewModel : ViewModelBase
     {
-        private const int TopRemainingItemsCount = 5;
         private readonly INavigationService navigationService;
         private readonly IToDoItemService toDoItemService;
 
-        public ProfileViewModel(INavigationService navigationService, IToDoItemService toDoItemService)
+        public ToDoItemsViewModel(INavigationService navigationService, IToDoItemService toDoItemService)
         {
             this.navigationService = navigationService;
             this.toDoItemService = toDoItemService;
 
             ItemSelectedCommand = new Command<ToDoItemModel>(HandleItemSelectedAsync);
-            OpenToDoItemsCommand = new Command<ToDoItemStatus>(OpenToDoItems);
+            RemoveItemCommand = new Command<ToDoItemModel>(HandleRemoveItem);
             ShowOrHideItemDescriptionCommand = new Command<ToDoItemModel>(ShowOrHideItemDescription);
             AddItemCommand = new Command(HandleAddItemAsync);
         }
 
-        private int completedTasksCount;
-        public int CompletedTasksCount
-        {
-            get => completedTasksCount;
-            set
-            {
-                completedTasksCount = value;
-                RaisePropertyChanged(() => CompletedTasksCount);
-            }
-        }
-
-        private int remainingTasksCount;
-        public int RemainingTasksCount
-        {
-            get => remainingTasksCount;
-            set
-            {
-                remainingTasksCount = value;
-                RaisePropertyChanged(() => RemainingTasksCount);
-            }
-        }
-
         public ICommand ItemSelectedCommand { get; }
 
-        public ICommand OpenToDoItemsCommand { get; }
+        public ICommand RemoveItemCommand { get; }
 
         public ICommand ShowOrHideItemDescriptionCommand { get; }
 
         public ICommand AddItemCommand { get; }
+
+        private string title;
+        public string Title
+        {
+            get => title;
+            set
+            {
+                title = value;
+                RaisePropertyChanged(() => Title);
+            }
+        }
 
         private ObservableCollection<ToDoItemModel> items;
         public ObservableCollection<ToDoItemModel> Items
@@ -72,11 +59,11 @@ namespace Xamarin.App.ViewModels
 
         public override async Task InitializeAsync(object navigationData)
         {
+            ToDoItemStatus itemStatus = (ToDoItemStatus)navigationData;
+            Title = itemStatus.ToString();
+
             IsBusy = true;
-            Items = GetTopList();
-            IEnumerable<ToDoItem> allItems = toDoItemService.GetItems().ToArray();
-            RemainingTasksCount = allItems.Count(item => !item.IsDone);
-            CompletedTasksCount = allItems.Count(item => item.IsDone);
+            Items = GetList(itemStatus);
             IsBusy = false;
         }
 
@@ -90,9 +77,9 @@ namespace Xamarin.App.ViewModels
             await navigationService.NavigateToAsync<ToDoItemViewModel>();
         }
 
-        private async void OpenToDoItems(ToDoItemStatus itemStatus)
+        private void HandleRemoveItem(ToDoItemModel item)
         {
-            await navigationService.NavigateToAsync<ToDoItemsViewModel>(itemStatus);
+            Items.Remove(item);
         }
 
         private void ShowOrHideItemDescription(ToDoItemModel item)
@@ -108,9 +95,9 @@ namespace Xamarin.App.ViewModels
             Items.Insert(position, item);
         }
 
-        private ObservableCollection<ToDoItemModel> GetTopList()
+        private ObservableCollection<ToDoItemModel> GetList(ToDoItemStatus status)
         {
-            IEnumerable<ToDoItemModel> todoItems = toDoItemService.GetTopItems(TopRemainingItemsCount)
+            IEnumerable<ToDoItemModel> todoItems = toDoItemService.GetItems(status)
                 .Select(item => new ToDoItemModel
                 {
                     BulletColor = item.IsDone ? Color.DeepPink : Color.DeepSkyBlue,

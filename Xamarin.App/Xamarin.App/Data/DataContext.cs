@@ -24,7 +24,7 @@ namespace Xamarin.App.Data
 
         public Task<List<ToDoItem>> GetItemsAsync()
         {
-            return database.QueryAsync<ToDoItem>($"SELECT * FROM {nameof(ToDoItem)} ORDER BY IsDone ASC");
+            return database.Table<ToDoItem>().ToListAsync();
         }
 
         public List<ToDoItem> GetItems()

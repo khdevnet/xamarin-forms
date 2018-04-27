@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Xamarin.App.ViewModels;
 
 namespace Xamarin.App.Extensibility.Services
@@ -7,7 +8,12 @@ namespace Xamarin.App.Extensibility.Services
     {
         ViewModelBase PreviousPageViewModel { get; }
 
-        Task InitializeAsync();
+        Task InitializeAsync<TLayoutViewModel, TMenuViewModel, TViewModel>()
+            where TLayoutViewModel : ViewModelBase
+            where TMenuViewModel : ViewModelBase
+            where TViewModel : ViewModelBase;
+
+        Task NavigateToAsync(Type viewModelType);
 
         Task NavigateToAsync<TViewModel>() where TViewModel : ViewModelBase;
 

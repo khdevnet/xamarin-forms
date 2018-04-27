@@ -6,25 +6,40 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.App.Extensibility.Services;
 using Xamarin.App.ViewModels;
+using Xamarin.App.Views;
 using Xamarin.Forms;
 
 namespace Xamarin.App.Services
 {
     public class NavigationService : INavigationService
     {
+        private Type layoutViewModelType;
+        private Type menuViewModelType;
+
         public ViewModelBase PreviousPageViewModel
         {
             get
             {
-                var mainPage = Application.Current.MainPage;
+                Page mainPage = Application.Current.MainPage;
                 //var viewModel = mainPage.Navigation.NavigationStack[mainPage.Navigation.NavigationStack.Count - 2].BindingContext;
                 return mainPage.BindingContext as ViewModelBase;
             }
         }
 
-        public Task InitializeAsync()
+
+        public Task InitializeAsync<TLayoutViewModel, TMenuViewModel, TViewModel>()
+            where TLayoutViewModel : ViewModelBase
+            where TMenuViewModel : ViewModelBase
+            where TViewModel : ViewModelBase
         {
-            return NavigateToAsync<ProfileViewModel>();
+            layoutViewModelType = typeof(TLayoutViewModel);
+            menuViewModelType = typeof(TMenuViewModel);
+            return InternalNavigateToAsync(typeof(TViewModel), null);
+        }
+
+        public Task NavigateToAsync(Type viewModelType)
+        {
+            return InternalNavigateToAsync(viewModelType, null);
         }
 
         public Task NavigateToAsync<TViewModel>() where TViewModel : ViewModelBase
@@ -68,28 +83,35 @@ namespace Xamarin.App.Services
 
         private async Task InternalNavigateToAsync(Type viewModelType, object parameter)
         {
+            Page layoutPage = CreatePage(layoutViewModelType, parameter);
+            Page menuPage = CreatePage(menuViewModelType, parameter);
             Page page = CreatePage(viewModelType, parameter);
 
-            NavigationPage navigationPage = Application.Current.MainPage as NavigationPage;
-            if (navigationPage != null)
+            if (layoutPage is MasterDetailPage masterPage)
             {
-                await navigationPage.PushAsync(page);
-            }
-            else
-            {
-                Application.Current.MainPage = new NavigationPage(page);
+                if (masterPage.Detail is NavigationPage navigationPage)
+                {
+                    await navigationPage.PushAsync(page);
+                }
+                else
+                {
+                    masterPage.Master = menuPage;
+                    masterPage.Detail = new NavigationPage(page);
+                    Application.Current.MainPage = masterPage;
+                }
             }
 
-
+            await (layoutPage.BindingContext as ViewModelBase).InitializeAsync(parameter);
+            await (menuPage.BindingContext as ViewModelBase).InitializeAsync(parameter);
             await (page.BindingContext as ViewModelBase).InitializeAsync(parameter);
         }
 
         private Type GetPageTypeForViewModel(Type viewModelType)
         {
-            var viewName = viewModelType.FullName.Replace("Model", string.Empty);
-            var viewModelAssemblyName = viewModelType.GetTypeInfo().Assembly.FullName;
-            var viewAssemblyName = string.Format(CultureInfo.InvariantCulture, "{0}, {1}", viewName, viewModelAssemblyName);
-            var viewType = Type.GetType(viewAssemblyName);
+            string viewName = viewModelType.FullName.Replace("Model", string.Empty);
+            string viewModelAssemblyName = viewModelType.GetTypeInfo().Assembly.FullName;
+            string viewAssemblyName = string.Format(CultureInfo.InvariantCulture, "{0}, {1}", viewName, viewModelAssemblyName);
+            Type viewType = Type.GetType(viewAssemblyName);
             return viewType;
         }
 
@@ -101,8 +123,7 @@ namespace Xamarin.App.Services
                 throw new Exception($"Cannot locate page type for {viewModelType}");
             }
 
-            Page page = Activator.CreateInstance(pageType) as Page;
-            return page;
+            return Activator.CreateInstance(pageType) as Page;
         }
     }
 }

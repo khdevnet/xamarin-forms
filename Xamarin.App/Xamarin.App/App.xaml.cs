@@ -2,6 +2,7 @@
 using AutoMapper;
 using Xamarin.App.Data.Models;
 using Xamarin.App.Extensibility.Services;
+using Xamarin.App.ViewModels;
 using Xamarin.App.ViewModels.Models;
 using Xamarin.App.Views;
 using Xamarin.Forms;
@@ -42,8 +43,9 @@ namespace Xamarin.App
 
         private Task InitNavigation()
         {
-            INavigationService navigationService = AppServiceLocator.Resolve<INavigationService>();
-            return navigationService.InitializeAsync();
+            return AppServiceLocator
+                .Resolve<INavigationService>()
+                .InitializeAsync<LayoutViewModel, MenuViewModel, ProfileViewModel>();
         }
 
         private static void ConfigureMapper()
