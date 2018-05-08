@@ -7,11 +7,11 @@ using Xamarin.App.Extensibility.Data;
 
 namespace Xamarin.App.Data
 {
-    public class DataContext : IDataContext
+    public class ToDoItemsDataContext : IToDoItemsDataContext
     {
         private readonly SQLiteAsyncConnection database;
 
-        public DataContext(string dbPath)
+        public ToDoItemsDataContext(string dbPath)
         {
             database = new SQLiteAsyncConnection(dbPath);
             database.CreateTableAsync<ToDoItem>().Wait();

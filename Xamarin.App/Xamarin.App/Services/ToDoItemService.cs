@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Xamarin.App.Data.Models;
 using Xamarin.App.Extensibility.Data;
 using Xamarin.App.Extensibility.Enum;
@@ -9,9 +10,9 @@ namespace Xamarin.App.Services
 {
     public class ToDoItemService : IToDoItemService
     {
-        private readonly IDataContext datacontext;
+        private readonly IToDoItemsDataContext datacontext;
 
-        public ToDoItemService(IDataContext datacontext)
+        public ToDoItemService(IToDoItemsDataContext datacontext)
         {
             this.datacontext = datacontext;
         }
@@ -29,6 +30,11 @@ namespace Xamarin.App.Services
                 : items.Where(item => item.IsDone);
         }
 
+        public async Task<ToDoItem> GetItemAsync(int id)
+        {
+            return await datacontext.GetItemAsync(id);
+        }
+
         public IEnumerable<ToDoItem> GetTopItems(int count)
         {
             return datacontext.GetItems()
@@ -36,6 +42,11 @@ namespace Xamarin.App.Services
                 .ThenByDescending(item => item.Id)
                 .Take(count)
                 .ToList();
+        }
+
+        public async Task<int> SaveItemAsync(ToDoItem item)
+        {
+            return await datacontext.SaveItemAsync(item);
         }
     }
 }

@@ -1,26 +1,32 @@
 ﻿using System.Threading.Tasks;
+using System.Windows.Input;
 using Xamarin.App.Data.Models;
-using Xamarin.App.Extensibility.Data;
+using Xamarin.App.Extensibility.Common;
 using Xamarin.App.Extensibility.Services;
+using Xamarin.App.ViewModels.Models;
 using Xamarin.Forms;
 
 namespace Xamarin.App.ViewModels
 {
     public class ToDoItemViewModel : ViewModelBase
     {
-        private readonly IDataContext dataContext;
+        private readonly IToDoItemService toDoItemService;
         private readonly INavigationService navigationService;
+        private readonly IEntityMapper entityMapper;
 
-        private ToDoItem item;
-
-        public ToDoItemViewModel(IDataContext dataContext, INavigationService navigationService)
+        public ToDoItemViewModel(
+            IToDoItemService toDoItemService,
+            INavigationService navigationService,
+            IEntityMapper entityMapper)
         {
-            this.dataContext = dataContext;
+            this.toDoItemService = toDoItemService;
             this.navigationService = navigationService;
-            SaveItemCommand = new Command(SaveItemAsync);
-            FinishItemCommand = new Command(FinishItemAsync);
+            this.entityMapper = entityMapper;
+            item = new ToDoItemDetailModel();
         }
-        public ToDoItem Item
+
+        private ToDoItemDetailModel item;
+        public ToDoItemDetailModel Item
         {
             get => item;
             set
@@ -30,18 +36,58 @@ namespace Xamarin.App.ViewModels
             }
         }
 
-        public Command SaveItemCommand { get; }
+        private bool isValid;
+        public bool IsValid
+        {
+            get => isValid;
+            set
+            {
+                isValid = value;
+                RaisePropertyChanged(() => IsValid);
+            }
+        }
 
-        public Command FinishItemCommand { get; }
+        private bool canFinish;
+        public bool CanFinish
+        {
+            get => canFinish;
+            set
+            {
+                canFinish = value;
+                RaisePropertyChanged(() => CanFinish);
+            }
+        }
+
+        #region Commands
+
+        public ICommand ValidateCommand => new Command(() => IsValid = Validate());
+
+        public Command SaveItemCommand => new Command(SaveItemAsync);
+
+        public Command FinishItemCommand => new Command(FinishItemAsync);
+        #endregion commands
 
         public override async Task InitializeAsync(object navigationData)
         {
-            if (navigationData is int)
-            {
-                IsBusy = true;
-                Item = await dataContext.GetItemAsync((int)navigationData);
-                IsBusy = false;
-            }
+            IsBusy = true;
+
+            ToDoItem itemData = await (navigationData is int id
+                ? toDoItemService.GetItemAsync(id)
+                : Task.FromResult(new ToDoItem()));
+
+            Item = entityMapper.Map<ToDoItem, ToDoItemDetailModel>(itemData);
+
+            CanFinish = Item.Id > 0;
+            IsValid = Validate();
+
+            IsBusy = false;
+        }
+
+        private bool Validate()
+        {
+            Item.Name.Validate();
+            Item.Description.Validate();
+            return Item.Name.IsValid && Item.Description.IsValid;
         }
 
         private async void SaveItemAsync()
@@ -50,16 +96,16 @@ namespace Xamarin.App.ViewModels
             await NavigateToProfilePage();
         }
 
-        private async Task SaveToDoItemAsync()
-        {
-            await dataContext.SaveItemAsync(item);
-        }
-
         private async void FinishItemAsync()
         {
             item.IsDone = true;
             await SaveToDoItemAsync();
             await NavigateToProfilePage();
+        }
+
+        private async Task SaveToDoItemAsync()
+        {
+            await toDoItemService.SaveItemAsync(entityMapper.Map<ToDoItemDetailModel, ToDoItem>(item));
         }
 
         private async Task NavigateToProfilePage()

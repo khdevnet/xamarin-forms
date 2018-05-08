@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using AutoMapper;
 using Xamarin.App.Data.Models;
 using Xamarin.App.Extensibility.Services;
 using Xamarin.App.ViewModels;
 using Xamarin.App.ViewModels.Models;
-using Xamarin.App.Views;
 using Xamarin.Forms;
 
 namespace Xamarin.App
@@ -45,7 +45,7 @@ namespace Xamarin.App
         {
             return AppServiceLocator
                 .Resolve<INavigationService>()
-                .InitializeAsync<LayoutViewModel, MenuViewModel, ProfileViewModel>();
+                .InitializeAsync<LayoutViewModel, MenuViewModel, SignInViewModel>();
         }
 
         private static void ConfigureMapper()
@@ -53,6 +53,23 @@ namespace Xamarin.App
             Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<ToDoItem, ToDoItemModel>();
+                cfg.CreateMap<ToDoItem, ToDoItemDetailModel>()
+                   .ConvertUsing(src => new ToDoItemDetailModel
+                   {
+                       Id = src.Id,
+                       IsDone = src.IsDone,
+                       Name = { Value = src.Name },
+                       Description = { Value = src.Description }
+                   });
+
+                cfg.CreateMap<ToDoItemDetailModel, ToDoItem>()
+                   .ConvertUsing(src => new ToDoItem
+                   {
+                       Id = src.Id,
+                       IsDone = src.IsDone,
+                       Name = src.Name?.Value ?? String.Empty,
+                       Description = src.Description?.Value ?? String.Empty
+                   });
             });
         }
     }

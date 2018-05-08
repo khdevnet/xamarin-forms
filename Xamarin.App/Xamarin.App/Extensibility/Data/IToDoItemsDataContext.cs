@@ -4,7 +4,7 @@ using Xamarin.App.Data.Models;
 
 namespace Xamarin.App.Extensibility.Data
 {
-    public interface IDataContext
+    public interface IToDoItemsDataContext
     {
         Task<List<ToDoItem>> GetItemsAsync();
 

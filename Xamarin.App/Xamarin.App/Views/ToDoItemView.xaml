@@ -2,35 +2,95 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:Xamarin.App.ViewModels;assembly=Xamarin.App"
+             xmlns:behaviors="clr-namespace:Xamarin.App.Behaviors;assembly=Xamarin.App"
+             xmlns:converters="clr-namespace:Xamarin.App.Converters;assembly=Xamarin.App"
              x:Class="Xamarin.App.Views.ToDoItemView"
              viewModels:ViewModelLocator.AutoWireViewModel="true"
-             Title="Add/Edit Todo Item">
+             Title="Add/Edit">
     <ContentPage.Resources>
         <ResourceDictionary>
-            <Style x:Key="TextInputStyle" TargetType="Entry"
-                   BasedOn="{StaticResource SmallTextEntry}">
-                <Setter Property="TextColor" Value="Black" />
-                <Setter Property="PlaceholderColor" Value="Black" />
-            </Style>
-
+            <converters:FirstValidationErrorConverter x:Key="FirstValidationErrorConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout>
-            <Entry Placeholder="Enter Name"
-                   Text="{Binding Item.Name}"
-                   Style="{StaticResource TextInputStyle}"/>
 
-            <Editor Text="{Binding Item.Description}"
-                    VerticalOptions="FillAndExpand"
-                    Style="{StaticResource TextInputStyle}"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20*" />
+                <RowDefinition Height="60*" />
+                <RowDefinition Height="20*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-            <Button Text="Save"
-                    HorizontalOptions="CenterAndExpand"
-                    Command="{Binding SaveItemCommand}"/>
-            <Button Text="Finish"
-                    HorizontalOptions="CenterAndExpand"
-                    Command="{Binding FinishItemCommand}"/>
-        </StackLayout>
+            <StackLayout Orientation="Vertical">
+                <Label Text="Name"
+                       Style="{StaticResource MicroLabelStyle}"
+                       VerticalOptions="StartAndExpand"/>
+                <Entry Placeholder="Enter Name"
+                       Text="{Binding Item.Name.Value, Mode=TwoWay}"
+                       Style="{StaticResource MicroEntryStyle}"
+                       VerticalOptions="StartAndExpand">
+                    <Entry.Behaviors>
+                        <behaviors:EventToCommandBehavior
+                            EventName="TextChanged"
+                            Command="{Binding ValidateCommand}" />
+                    </Entry.Behaviors>
+                </Entry>
+                <Label 
+                    Text="{Binding Item.Name.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
+                    Style="{StaticResource ValidationErrorLabelStyle}" 
+                    VerticalOptions="StartAndExpand"/>
+            </StackLayout>
+
+            <StackLayout Grid.Row="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20*" />
+                        <RowDefinition Height="70*" />
+                        <RowDefinition Height="10*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Text="Description"
+                           Style="{StaticResource MicroLabelStyle}"/>
+
+                    <Editor Grid.Row="1"
+                            Text="{Binding Item.Description.Value, Mode=TwoWay}"
+                            Style="{StaticResource MicroEntryStyle}">
+                        <Editor.Behaviors>
+                            <behaviors:EventToCommandBehavior
+                            EventName="TextChanged"
+                            Command="{Binding ValidateCommand}" />
+                        </Editor.Behaviors>
+                    </Editor>
+
+                    <Label Grid.Row="2"
+                           Text="{Binding Item.Description.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
+                           Style="{StaticResource ValidationErrorLabelStyle}" />
+                </Grid>
+            </StackLayout>
+
+            <StackLayout  Grid.Row="2">
+                <StackLayout Orientation="Horizontal">
+                    <Button Text="Save"
+                        BackgroundColor="DeepSkyBlue" 
+                        TextColor="White"
+                        HorizontalOptions="FillAndExpand"
+                        Command="{Binding SaveItemCommand}"
+                        IsEnabled="{Binding IsValid}"/>
+
+                    <Button Text="Finish"
+                        TextColor="White"
+                        BackgroundColor="DeepPink"
+                        HorizontalOptions="FillAndExpand"
+                        Command="{Binding FinishItemCommand}"
+                        IsEnabled="{Binding CanFinish}"/>
+                </StackLayout>
+            </StackLayout>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

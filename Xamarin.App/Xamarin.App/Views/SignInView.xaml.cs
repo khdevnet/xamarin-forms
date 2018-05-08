@@ -1,6 +1,4 @@
-﻿using System;
-
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace Xamarin.App.Views
@@ -12,10 +10,6 @@ namespace Xamarin.App.Views
         {
             InitializeComponent();
             NavigationPage.SetHasNavigationBar(this, false);
-        }
-        private async void LoginButtonClicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new ProfileView());
         }
     }
 }
