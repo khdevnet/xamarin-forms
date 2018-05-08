@@ -1,7 +1,7 @@
 # Xamarin Forms Playground
 ### Layout Samples
 
-![Login Page](https://github.com/khdevnet/xamarin-forms/blob/master/material_screens/layout_samples/login_page.png)
+![Login Page](https://github.com/khdevnet/xamarin-forms/blob/master/material_screens/layout_samples/login_page.png | width=75)
 
 ![Profile Page](https://github.com/khdevnet/xamarin-forms/blob/master/material_screens/layout_samples/profile_page.png)
 
